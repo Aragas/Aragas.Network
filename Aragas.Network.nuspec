@@ -1,0 +1,26 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<package xmlns="http://schemas.microsoft.com/packaging/2012/06/nuspec.xsd">
+    <metadata>
+        <id>Aragas.Network</id>
+        <version>1.0.0</version>
+        <title>Aragas.Network</title>
+        <authors>Aragas</authors>
+        <owners>Aragas</owners>
+        <licenseUrl>https://github.com/Aragas/Aragas.Network/blob/master/LICENSE</licenseUrl>
+        <projectUrl>https://github.com/Aragas/Aragas.Network</projectUrl>
+        <requireLicenseAcceptance>false</requireLicenseAcceptance>
+        <description>Aragas.Network is a network library. Further description will be provided</description>
+        <summary />
+        <dependencies>
+            <group targetFramework=".NETPortable0.0-net45+netcore45+wpa81">
+                <dependency id="PCLExt.FileStorage" version="1.0.4" />
+                <dependency id="PCLExt.Network" version="1.0.8" />
+                <dependency id="Portable.BouncyCastle" version="1.8.1" />
+            </group>
+        </dependencies>
+    </metadata>
+    <files>
+        <file src="bin\Release\Aragas.Network.dll" target="lib\portable-net45+netcore45+wpa81\Aragas.Network.dll" />
+        <file src="bin\Release\Aragas.Network.XML" target="lib\portable-net45+netcore45+wpa81\Aragas.Network.xml" />
+    </files>
+</package>
