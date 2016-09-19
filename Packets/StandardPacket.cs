@@ -5,5 +5,5 @@ namespace Aragas.Network.Packets
     /// <summary>
     /// <see cref="Packet"/> with .NET data types.
     /// </summary>
-    public abstract class StandardPacket : Packet<int, ProtobufPacket, StandardDataReader, StandardStream> { }
+    public abstract class StandardPacket : Packet<ProtobufPacket, StandardDataReader, StandardStream> { }
 }

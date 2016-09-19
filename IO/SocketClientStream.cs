@@ -4,8 +4,8 @@ using System.IO;
 using PCLExt.Network;
 
 namespace Aragas.Network.IO
-{
-    public sealed class TCPClientStream : Stream
+{ 
+    public class SocketClientStream : Stream
     {
         public override bool CanRead { get; }
         public override bool CanSeek { get; }
@@ -13,10 +13,10 @@ namespace Aragas.Network.IO
         public override long Length { get; }
         public override long Position { get; set; }
 
-        private readonly ITCPClient _client;
+        private readonly ISocketClient _client;
 
 
-        public TCPClientStream(ITCPClient client) { _client = client; }
+        public SocketClientStream(ISocketClient client) { _client = client; }
 
 
         public override void Write(byte[] buffer, int offset, int count) { _client.Write(buffer, offset, count); }

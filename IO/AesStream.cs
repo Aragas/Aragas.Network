@@ -7,6 +7,6 @@ namespace Aragas.Network.IO
     /// </summary>
     public abstract class AesStream : Stream
     {
-        protected abstract Stream BaseStream { get; }
+
     }
 }

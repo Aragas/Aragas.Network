@@ -2,7 +2,7 @@
 <package xmlns="http://schemas.microsoft.com/packaging/2012/06/nuspec.xsd">
     <metadata>
         <id>Aragas.Network</id>
-        <version>1.0.0</version>
+        <version>1.0.3</version>
         <title>Aragas.Network</title>
         <authors>Aragas</authors>
         <owners>Aragas</owners>
@@ -13,9 +13,9 @@
         <summary />
         <dependencies>
             <group targetFramework=".NETPortable0.0-net45+netcore45+wpa81">
-                <dependency id="PCLExt.FileStorage" version="1.0.4" />
-                <dependency id="PCLExt.Network" version="1.0.8" />
-                <dependency id="Portable.BouncyCastle" version="1.8.1" />
+                <dependency id="PCLExt.FileStorage" version="1.0.5" />
+                <dependency id="PCLExt.Network" version="1.0.12" />
+                <dependency id="Portable.BouncyCastle" version="1.8.1.1" />
             </group>
         </dependencies>
     </metadata>

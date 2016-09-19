@@ -24,9 +24,9 @@ namespace Aragas.Network.IO
     public abstract partial class PacketStream : IDisposable
     {
         public abstract bool IsServer { get; }
+        public abstract bool IsConnected { get; }
         public abstract string Host { get; }
         public abstract ushort Port { get; }
-        public abstract bool Connected { get; }
         public abstract int DataAvailable { get; }
 
         protected abstract Stream BaseStream { get; }

@@ -16,40 +16,40 @@ namespace Aragas.Network.IO
     {
         public override bool IsServer { get; }
 
-        public override string Host => TCPClient.IP;
-        public override ushort Port => TCPClient.Port;
-        public override bool Connected => TCPClient != null && TCPClient.Connected;
-        public override int DataAvailable => TCPClient?.DataAvailable ?? 0;
+        public override string Host => Socket.RemoteEndPoint.IP;
+        public override ushort Port => Socket.RemoteEndPoint.Port;
+        public override bool IsConnected => Socket != null && Socket.IsConnected;
+        public override int DataAvailable => Socket?.DataAvailable ?? 0;
 
 
-        public bool EncryptionEnabled { get; private set; }
+        public bool EncryptionEnabled { get; protected set; }
 
         private Encoding Encoding { get; } = Encoding.UTF8;
 
 
-        private ITCPClient TCPClient { get; }
-        private TCPClientStream TCPClientStream { get; }
+        private ISocketClient Socket { get; }
+        private Stream SocketStream { get; }
         private AesStream AesStream { get; set; }
 
-        protected override Stream BaseStream => EncryptionEnabled ? (Stream) AesStream : (Stream) TCPClientStream;
+        protected override Stream BaseStream => EncryptionEnabled ? (Stream) AesStream : (Stream) SocketStream;
         protected byte[] _buffer;
 
 
-        public ProtobufStream(ITCPClient tcp, bool isServer = false)
+        public ProtobufStream(ISocketClient socket, bool isServer = false)
         {
-            TCPClient = tcp;
-            TCPClientStream = new TCPClientStream(TCPClient);
+            Socket = socket;
+            SocketStream = new SocketClientStream(Socket);
             IsServer = isServer;
         }
 
 
-        public override void Connect(string ip, ushort port) { TCPClient.Connect(ip, port); }
-        public override void Disconnect() { TCPClient.Disconnect(); }
+        public override void Connect(string ip, ushort port) { Socket.Connect(ip, port); }
+        public override void Disconnect() { Socket.Disconnect(); }
 
 
-        public void InitializeEncryption(byte[] key)
+        public virtual void InitializeEncryption(byte[] key)
         {
-            AesStream = new BouncyCastleAes(TCPClient, key);
+            AesStream = new BouncyCastleAesStream(Socket, key);
             EncryptionEnabled = true;
         }
 
@@ -383,6 +383,9 @@ namespace Aragas.Network.IO
         public override void Dispose()
         {
             _buffer = null;
+
+            SocketStream?.Dispose();
+            AesStream?.Dispose();
         }
     }
 }
