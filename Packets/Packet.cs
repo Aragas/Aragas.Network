@@ -17,11 +17,11 @@ namespace Aragas.Network.Packets
         private static TypeInfo GetTypeFromNameAndAbstract<T>(string className, IEnumerable<Assembly> assemblies) =>
             assemblies.SelectMany(assembly => assembly.DefinedTypes.Where(typeInfo => typeInfo.IsSubclassOf(typeof(T))).Select(typeInfo => typeInfo)).FirstOrDefault();
 
-        public static Dictionary<int, Func<TPacket>> CreateIDList<TPacket>(Enum packetEnum, IEnumerable<Assembly> whereToFindPackets) where TPacket : Packet
+        public static Dictionary<int, Func<TPacket>> CreateIDList<TPacket>(Type packetEnumType, IEnumerable<Assembly> whereToFindPackets) where TPacket : Packet
         {
             var packetDictionary = new Dictionary<int, Func<TPacket>>();
 
-            var typeNames = Enum.GetValues(packetEnum.GetType());
+            var typeNames = Enum.GetValues(packetEnumType);
 
             foreach (var packetName in typeNames)
             {
