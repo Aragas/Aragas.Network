@@ -361,8 +361,19 @@ namespace Aragas.Network.IO
         public override void SendPacket(Packet packet)
         {
             var protobufPacket = packet as ProtobufPacket;
-            Write(new VarInt(protobufPacket.ID));
-            protobufPacket.WritePacket(this);
+            if (protobufPacket != null)
+            {
+                Write(new VarInt(protobufPacket.ID));
+                protobufPacket.WritePacket(this);
+            }
+
+            var protobufPacketA = packet as ProtobufPacketAttribute;
+            if (protobufPacketA != null)
+            {
+                Write(new VarInt(protobufPacketA.ID));
+                protobufPacketA.WritePacket(this);
+            }
+
             Purge();
         }
 

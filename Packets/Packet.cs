@@ -13,13 +13,35 @@ namespace Aragas.Network.Packets
     /// </summary>
     public abstract class Packet
     {
+        #region Packet Build
+        private static TypeInfo GetTypeFromNameAndAbstract<T>(string className, IEnumerable<Assembly> assemblies) =>
+            assemblies.SelectMany(assembly => assembly.DefinedTypes.Where(typeInfo => typeInfo.IsSubclassOf(typeof(T))).Select(typeInfo => typeInfo)).FirstOrDefault();
+
+        public static Dictionary<int, Func<TPacket>> CreateIDList<TPacket>(Enum packetEnum, IEnumerable<Assembly> whereToFindPackets) where TPacket : Packet
+        {
+            var packetDictionary = new Dictionary<int, Func<TPacket>>();
+
+            var typeNames = Enum.GetValues(packetEnum.GetType());
+
+            foreach (var packetName in typeNames)
+            {
+                var typeName = $"{packetName}Packet";
+                var type = GetTypeFromNameAndAbstract<TPacket>(typeName, whereToFindPackets);
+                packetDictionary.Add((int) packetName, type != null ? (Func<TPacket>) (() => (TPacket) ActivatorCached.CreateInstance(type.AsType())) : null);
+            }
+
+            return packetDictionary;
+        }
+        #endregion Packet Build
+
+        #region Packet Attribute Build
         private static IEnumerable<TypeInfo> GetTypeInfosFromAbstract<T>(IEnumerable<Assembly> assemblies) =>
             assemblies.SelectMany(assembly => assembly.DefinedTypes.Where(typeInfo => typeInfo.IsSubclassOf(typeof(T))));
 
         private static KeyValuePair<int, Func<TPacket>> GetPacketIDAndFunc<TPacket>(TypeInfo typeInfo) where TPacket : Packet =>
             new KeyValuePair<int, Func<TPacket>>(typeInfo.GetCustomAttribute<PacketAttribute>().ID, () => (TPacket) ActivatorCached.CreateInstance(typeInfo.AsType()));
 
-        public static Dictionary<int, Func<TPacket>> CreateIDList<TPacket>(IEnumerable<Assembly> whereToFindPackets) where TPacket : Packet
+        public static Dictionary<int, Func<TPacket>> CreateIDListByAttribute<TPacket>(IEnumerable<Assembly> whereToFindPackets) where TPacket : Packet
         {
             var typeInfos = GetTypeInfosFromAbstract<TPacket>(whereToFindPackets);
             var typeInfosWithAttribute = typeInfos.Where(typeInfo => typeInfo.IsDefined(typeof(PacketAttribute), false));
@@ -32,28 +54,19 @@ namespace Aragas.Network.Packets
             }
             return packetDictionary;
         }
+        #endregion Packet Attribute Build
     }
 
     /// <summary>
     /// The "constructor" for a custom <see cref="Packet"/>. Use this to create a new <see cref="Packet"/>.
     /// </summary>
+    /// <typeparam name="TIDType"><see cref="Packet"/>'s unique ID type. It will be used to differentiate <see cref="Packet"/>'s</typeparam>
     /// <typeparam name="TPacketType">Put here the new <see cref="Packet"/> type.</typeparam>
     /// <typeparam name="TReader"><see cref="PacketDataReader"/>. You can create a custom one or use <see cref="StandardDataReader"/> and <see cref="ProtobufDataReader"/></typeparam>
     /// <typeparam name="TWriter"><see cref="PacketStream"/>. You can create a custom one or use <see cref="StandardStream"/> and <see cref="ProtobufStream"/></typeparam>
-    public abstract class Packet<TPacketType, TReader, TWriter> : Packet where TPacketType : Packet where TReader : PacketDataReader where TWriter : PacketStream
+    public abstract class Packet<TIDType, TPacketType, TReader, TWriter> : Packet where TPacketType : Packet where TReader : PacketDataReader where TWriter : PacketStream
     {
-        private int? _id;
-        public virtual int ID
-        {
-            get
-            {
-                if (_id != null)
-                    return _id.Value;
-
-                _id = GetType().GetTypeInfo().GetCustomAttribute<PacketAttribute>().ID;
-                return _id.Value;
-            }
-        }
+        public abstract TIDType ID { get; }
 
         /// <summary>
         /// Read packet from <see cref="PacketDataReader"/>.

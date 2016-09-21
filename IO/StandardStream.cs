@@ -265,8 +265,19 @@ namespace Aragas.Network.IO
         public override void SendPacket(Packet packet)
         {
             var standartPacket = packet as StandardPacket;
-            Write(standartPacket.ID);
-            standartPacket.WritePacket(this);
+            if (standartPacket != null)
+            {
+                Write(standartPacket.ID);
+                standartPacket.WritePacket(this);
+            }
+
+            var standartPacketA = packet as StandardPacketAttribute;
+            if (standartPacketA != null)
+            {
+                Write(standartPacketA.ID);
+                standartPacketA.WritePacket(this);
+            }
+
             Purge();
         }
 

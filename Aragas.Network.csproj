@@ -71,6 +71,7 @@
     <Compile Include="PacketHandlers\IPacketHandlerContext.cs" />
     <Compile Include="PacketHandlers\PacketHandler.cs" />
     <Compile Include="Packets\Packet.cs" />
+    <Compile Include="Packets\PacketAttribute.cs" />
     <Compile Include="Packets\ProtobufPacket.cs" />
     <Compile Include="Packets\StandardPacket.cs" />
     <Compile Include="PKCS1Signer.cs" />
