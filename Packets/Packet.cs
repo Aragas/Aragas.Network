@@ -15,7 +15,7 @@ namespace Aragas.Network.Packets
     {
         #region Packet Build
         private static TypeInfo GetTypeFromNameAndAbstract<T>(string className, IEnumerable<Assembly> assemblies) =>
-            assemblies.SelectMany(assembly => assembly.DefinedTypes.Where(typeInfo => typeInfo.IsSubclassOf(typeof(T))).Select(typeInfo => typeInfo)).FirstOrDefault();
+            assemblies.Select(assembly => assembly.DefinedTypes.Where(typeInfo => typeInfo.IsSubclassOf(typeof(T))).FirstOrDefault(typeInfo => typeInfo.Name == className)).FirstOrDefault();
 
         public static Dictionary<int, Func<TPacket>> CreateIDList<TPacket>(Type packetEnumType, IEnumerable<Assembly> whereToFindPackets) where TPacket : Packet
         {
